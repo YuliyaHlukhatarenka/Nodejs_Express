@@ -1,5 +1,5 @@
 import { Response, Request } from 'express';
-import * as ProductsService from '../services/productsService';
+import * as ProductsService from '../mongo-service/services/productService';
 
 export const getProducts = async (_req, res) => {
   const products = await ProductsService.getProducts();
@@ -11,6 +11,6 @@ export const getProductById = async (
   res: Response
 ) => {
     const { id } = req.params;
-    const product = await ProductsService.getProductById(id);
+    const product = await ProductsService.getProductById(id as string);
     res.status(200).json(product);
 };
