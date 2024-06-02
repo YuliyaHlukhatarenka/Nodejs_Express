@@ -1,8 +1,10 @@
 import express from "express";
-import { connectionDB } from "./mongo-service/index";
 import { errorHandler } from "./controllers/errorHandler";
+import { createModels } from "./postgres";
+
 const app = express();
-connectionDB();
+export const db = createModels();
+db.sequelize.sync();
 
 app.use((req, res, next) => {
   const userId = req.headers["x-user-id"];
