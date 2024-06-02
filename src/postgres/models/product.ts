@@ -21,9 +21,5 @@ export const ProductFactory = (sequelize, DataTypes) => {
     },
   })
 
-  Product.associate = (models) => {
-    Product.belongsToMany(models.CartItem, { through: "CardItemProduct" });
-  };
-
   return Product;
 };

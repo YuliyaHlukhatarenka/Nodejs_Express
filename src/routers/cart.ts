@@ -1,13 +1,16 @@
 import express from "express";
 
 const cardRouter = express.Router();
-const cartController = require("../controllers/cartController");
-const orderController = require("../controllers/orderController");
+import { getCart, deleteCart, updateCart } from "../controllers/cartController";
+import {
+  createOrder,
+} from "../controllers/orderController";
+import { authorizationMiddleware, isAdminMiddleware } from "../controllers/userController";
 
 cardRouter.use(express.json());
-cardRouter.get("/", cartController.getCart);
-cardRouter.post("/checkout", orderController.createOrder);
-cardRouter.put("/", cartController.updateCart);
-cardRouter.delete("/", cartController.deleteCart);
+cardRouter.get("/", authorizationMiddleware, getCart);
+cardRouter.post("/checkout", createOrder);
+cardRouter.put("/", updateCart);
+cardRouter.delete("/", authorizationMiddleware, isAdminMiddleware, deleteCart);
 
 module.exports = cardRouter;

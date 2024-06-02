@@ -1,3 +1,5 @@
+import { ForeignKey } from "sequelize-typescript";
+
 export const CartFactory = (sequelize, DataTypes) => {
   const Cart = sequelize.define("Cart", {
     id: {
@@ -16,17 +18,16 @@ export const CartFactory = (sequelize, DataTypes) => {
   });
 
   Cart.associate = (models) => {
-    Cart.hasMany(models.CartItem);
+    Cart.hasMany(models.CartItem, { foreignKey: "cartId", as: "items"});
   };
 
   return Cart;
 };
 
-
 export const CartItemFactory = (sequelize, DataTypes) => {
   const CartItem = sequelize.define("CartItem", {
     id: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
     },
@@ -34,8 +35,12 @@ export const CartItemFactory = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    orderId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     productId: {
-      type: DataTypes.STRING  ,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     count: {
@@ -45,8 +50,9 @@ export const CartItemFactory = (sequelize, DataTypes) => {
   });
 
   CartItem.associate = (models) => {
-    CartItem.belongsTo(models.Cart);
-    CartItem.belongsTo(models.Product, { foreignKey: 'CartItemProduct' });
+    CartItem.belongsTo(models.Cart, { foreignKey: "cartId" });
+    CartItem.belongsTo(models.Cart, { foreignKey: "orderId" });
+    CartItem.belongsTo(models.Product, { foreignKey: 'productId' });
   };
 
   return CartItem;
