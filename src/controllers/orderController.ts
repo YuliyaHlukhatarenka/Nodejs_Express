@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import * as OrderService from "../mongo-service/services/orderService";
+import * as OrderService from "../postgres/services/orderService";
 
 export const createOrder = async (
   req: Request<any, any, any, any>,

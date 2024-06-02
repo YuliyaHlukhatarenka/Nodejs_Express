@@ -1,5 +1,5 @@
 import { Response, Request } from 'express';
-import * as ProductsService from '../mongo-service/services/productService';
+import * as ProductsService from "../postgres/services/productService";
 
 export const getProducts = async (_req, res) => {
   const products = await ProductsService.getProducts();

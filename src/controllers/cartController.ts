@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import * as CartService from "../mongo-service/services/cartService";
+import * as CartService from "../postgres/services/cartService";
 
 export const getCart = async (
   req: Request<any, any, any, any>,
@@ -16,16 +16,16 @@ export const updateCart = async (
 ) => {
   const userId = req.headers["x-user-id"];
   const { productId, count } = req.body;
-  const product = await CartService.updateCart(
+  const cart = await CartService.updateCart(
     userId as string,
     productId,
     count
   );
-  if (product) {
-      res.status(200).json(product);
+  if (Boolean(cart)) {
+    res.status(200).json(cart);
   } else {
-      res.statusCode = 400;
-      res.end(JSON.stringify({ error: "Products are not valid" }));
+    res.statusCode = 400;
+    res.end(JSON.stringify({ error: "Products are not valid" }));
   }
 };
 
