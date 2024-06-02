@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid";
 export const getCart = async (userId: string) => {
   let cart;
   try {
-    cart = await sequelize.models.Cart.findOne({ where: { userId }});
+    cart = await sequelize.models.Cart.findOne({ where: { userId }, include: "items"});
     if (cart) {
       return cart;
     } else {
@@ -27,21 +27,37 @@ export const updateCart = async (
   count: number
 ) => {
   try {
-    const cart = await sequelize.models.Cart.findOne({ where: { userId } });
-    if (!cart) return;
+    const cart = await sequelize.models.Cart.findOne({
+      where: { userId },
+      include: "items",
+    });
+    if (!cart) return undefined;
 
     if (count) {
       let product = await sequelize.models.CartItem.findOne({
-        where: { cartId: userId, productId },
+        where: { cartId: cart.dataValues.id, productId },
       });
       if (product) {
-        await sequelize.models.CartItem.update({ count }, { where: { cartId: userId, productId }});
+        await sequelize.models.CartItem.update(
+          { count },
+          { where: { cartId: cart.dataValues.id, productId } }
+        );
       } else {
-        sequelize.models.CartItem.create({ id: uuid(), cartId: userId, productId, count});
+        sequelize.models.CartItem.create({
+          id: uuid(),
+          cartId: cart.dataValues.id,
+          productId,
+          count,
+        });
       }
     } else {
-      sequelize.models.CartItem.destroy({ where: { cartId: userId, productId } });
+      sequelize.models.CartItem.destroy({
+        where: { cartId: cart.dataValues.id, productId },
+      });
     }
+    await cart.save();
+    await cart.reload();
+    return cart.toJSON();
   } catch (err) {
     console.error("Cart not exists", err);
   }
@@ -49,7 +65,7 @@ export const updateCart = async (
 
 export const deleteCart = async (userId: string) => {
   try {
-    const result = await sequelize.models.Cart.destroy({where: { userId } });
+    const result = await sequelize.models.Cart.destroy({ where: { userId } });
     console.log("Delete cart", result);
   } catch (err) {
     console.error("Error deleting cart", err);

@@ -17,10 +17,6 @@ export const OrderFactory = (sequelize, DataTypes) => {
       primaryKey: true,
       allowNull: false,
     },
-    items: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     payment: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -40,7 +36,7 @@ export const OrderFactory = (sequelize, DataTypes) => {
   });
 
   Order.associate = (models) => {
-    Order.hasMany(models.CartItem, { foreignKey: "cartId" });
+    Order.hasMany(models.CartItem, { foreignKey: "orderId", as: "items" });
   };
 
   return Order;
