@@ -7,6 +7,7 @@ export const createUserMiddleware = async (req, res) => {
     const passwordHash = await encryptPassword(data.password);
     const user = await createUser({ ...data, password: passwordHash });
     const { password, ...rest } = user.dataValues;
+    req.logger.debug("User was created");
     res.status(200).json(rest);
 }
 

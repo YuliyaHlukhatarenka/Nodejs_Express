@@ -4,12 +4,13 @@ import { CartFactory, CartItemFactory } from "./models/cart";
 import { ProductFactory } from "./models/product";
 import { OrderFactory } from "./models/order";
 import { UserFactory } from "./models/user";
+import { logger } from "../logger/logger";
 
 export const createModels = () => {
-  console.log("Authenticating....");
+  logger.info("Authenticating....");
   try {
     sequelize.authenticate();
-    console.log("connection has been established successfully")
+    logger.info("connection has been established successfully");
     const db = {
       sequelize,
       Sequelize,
@@ -28,7 +29,7 @@ export const createModels = () => {
 
     return db;
   } catch (err) {
-    console.log("Unable to connect to DB", err);
+    logger.info("Unable to connect to DB", err);
     throw err;
   }
 };

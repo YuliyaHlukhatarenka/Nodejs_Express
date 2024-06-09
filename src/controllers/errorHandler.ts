@@ -1,4 +1,5 @@
 import { Response, Request, NextFunction } from "express";
+import { logger } from "../logger/logger";
 
 export const errorHandler = (
   err: Error,
@@ -6,7 +7,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(err);
+  logger.error(err);
   res.status(500);
   res.send({ message: err.message });
 };
